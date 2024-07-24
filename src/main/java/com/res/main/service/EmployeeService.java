@@ -1,9 +1,7 @@
 package com.res.main.service;
 
 import com.res.main.model.ApiResponse;
-import com.res.main.model.CategoriesEntity;
 import com.res.main.model.EmployeesEntity;
-import com.res.main.repository.CategoryRepository;
 import com.res.main.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,50 +11,45 @@ import java.util.Optional;
 
 @Service
 public class EmployeeService {
-    @Autowired
-    EmployeeRepository employeeRepository;
 
-    public ApiResponse<List<EmployeesEntity>> getAllEmployee() {
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    public ApiResponse<List<EmployeesEntity>> getAllEmployees() {
         List<EmployeesEntity> employees = employeeRepository.findAll();
         if (employees.isEmpty()) {
-            return new ApiResponse<>("success", employees, "No employees found");
+            return new ApiResponse<>(false, "No employees found", employees);
         }
-        return new ApiResponse<>("success", employees, "Employees retrieved successfully");
-
+        return new ApiResponse<>(true, "Employees retrieved successfully", employees);
     }
 
     public ApiResponse<EmployeesEntity> createEmployee(EmployeesEntity employee) {
-        EmployeesEntity employees = employeeRepository.save(employee);
-        return new ApiResponse<>("success", employees, "Employees created successfully");
+        EmployeesEntity savedEmployee = employeeRepository.save(employee);
+        return new ApiResponse<>(true, "Employee created successfully", savedEmployee);
     }
 
     public ApiResponse<String> deleteEmployee(long id) {
-        if (employeeRepository.existsById(id)){
+        if (employeeRepository.existsById(id)) {
             employeeRepository.deleteById(id);
-            return new ApiResponse<>("success", "Employee deleted", "Employees deleted successfully");
-
+            return new ApiResponse<>(true, "Employee deleted successfully", "Employee deleted");
         }
-        return new ApiResponse<>("error", null, "Not found");
-
+        return new ApiResponse<>(false, "Employee not found", null);
     }
 
-    public ApiResponse<EmployeesEntity> updateEmployee(EmployeesEntity updateEmployee, long id) {
-
+    public ApiResponse<EmployeesEntity> updateEmployee(long id, EmployeesEntity updatedEmployee) {
         if (employeeRepository.existsById(id)) {
-            updateEmployee.setId(id);
-            employeeRepository.save(updateEmployee);
-            return new ApiResponse<>("success", updateEmployee, "Employees update successfully");
+            updatedEmployee.setId(id);
+            EmployeesEntity savedEmployee = employeeRepository.save(updatedEmployee);
+            return new ApiResponse<>(true, "Employee updated successfully", savedEmployee);
         }
-        return new ApiResponse<>("error", null, "Employee not found");
-
-
+        return new ApiResponse<>(false, "Employee not found", null);
     }
 
     public ApiResponse<EmployeesEntity> findById(long id) {
         Optional<EmployeesEntity> employee = employeeRepository.findById(id);
-        if (employee.isPresent()){
-            return new ApiResponse<>("success", employee.get(), "Employees update ");
+        if (employee.isPresent()) {
+            return new ApiResponse<>(true, "Employee retrieved successfully", employee.get());
         }
-        return new ApiResponse<>("error", null, "Employee not found");
+        return new ApiResponse<>(false, "Employee not found", null);
     }
 }

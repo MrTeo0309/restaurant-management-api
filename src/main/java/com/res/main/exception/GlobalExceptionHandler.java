@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        ApiResponse<Map<String, String>> response = new ApiResponse<>("error", null, "Validation failed");
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(false, "Validation failed",null);
         response.setData(errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

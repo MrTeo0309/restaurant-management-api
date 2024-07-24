@@ -32,7 +32,7 @@ public class DishController {
     @PostMapping
     public ResponseEntity<?> createDish(@Valid @RequestBody DishesEntity newDish) {
         ApiResponse<DishesEntity> response = dishService.createDish(newDish);
-        if (response.getStatus().equals("error")) {
+        if (!response.isSuccess()) {
             return ResponseEntity.status(400).body(response); // Status 400 Bad Request
         }
         return ResponseEntity.status(201).body(response); // Status 201 Created

@@ -13,31 +13,31 @@ import java.util.Optional;
 @Service
 public class DiscountService {
     @Autowired
-    DiscountRepository discountRepository;
+    private DiscountRepository discountRepository;
 
     public ApiResponse<List<DiscountsEntity>> getAllDiscounts() {
         List<DiscountsEntity> discounts = discountRepository.findAll();
         if (discounts.isEmpty()) {
-            return new ApiResponse<>("success", discounts, "No discounts found");
+            return new ApiResponse<>(false, "No discounts found", discounts);
         }
-        return new ApiResponse<>("success", discounts, "Discounts retrieved successfully");
+        return new ApiResponse<>(true, "Discounts retrieved successfully", discounts);
     }
 
     public ApiResponse<DiscountsEntity> getDiscountById(long id) {
         Optional<DiscountsEntity> discount = discountRepository.findById(id);
         if (discount.isPresent()) {
-            return new ApiResponse<>("success", discount.get(), "Discount retrieved successfully");
+            return new ApiResponse<>(true, "Discount retrieved successfully", discount.get());
         } else {
-            return new ApiResponse<>("error", null, "Discount not found");
+            return new ApiResponse<>(false, "Discount not found", null);
         }
     }
 
     public ApiResponse<DiscountsEntity> createDiscount(DiscountsEntity newDiscount) {
         try {
             DiscountsEntity savedDiscount = discountRepository.save(newDiscount);
-            return new ApiResponse<>("success", savedDiscount, "Discount created successfully");
+            return new ApiResponse<>(true, "Discount created successfully", savedDiscount);
         } catch (DataIntegrityViolationException e) {
-            return new ApiResponse<>("error", null, "Discount code already exists");
+            return new ApiResponse<>(false, "Discount code already exists", null);
         }
     }
 
@@ -45,18 +45,18 @@ public class DiscountService {
         if (discountRepository.existsById(id)) {
             updatedDiscount.setId(id);
             DiscountsEntity savedDiscount = discountRepository.save(updatedDiscount);
-            return new ApiResponse<>("success", savedDiscount, "Discount updated successfully");
+            return new ApiResponse<>(true, "Discount updated successfully", savedDiscount);
         } else {
-            return new ApiResponse<>("error", null, "Discount not found");
+            return new ApiResponse<>(false, "Discount not found", null);
         }
     }
 
     public ApiResponse<String> deleteDiscount(long id) {
         if (discountRepository.existsById(id)) {
             discountRepository.deleteById(id);
-            return new ApiResponse<>("success", "Discount deleted", "Discount deleted successfully");
+            return new ApiResponse<>(true, "Discount deleted successfully", "Discount deleted");
         } else {
-            return new ApiResponse<>("error", null, "Discount not found");
+            return new ApiResponse<>(false, "Discount not found", null);
         }
     }
 }

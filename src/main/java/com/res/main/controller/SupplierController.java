@@ -28,7 +28,7 @@ public class SupplierController {
     @PostMapping
     public ResponseEntity<?> createSupplier(@Valid @RequestBody SuppliersEntity newSupplier) {
         ApiResponse<SuppliersEntity> supplier = supplierService.createSupplier(newSupplier);
-        if (supplier.getStatus().equals("error")) {
+        if (!supplier.isSuccess()) {
             return ResponseEntity.status(400).body(supplier);
         }
         return ResponseEntity.status(201).body(supplier);
@@ -36,7 +36,7 @@ public class SupplierController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getSupplier(@PathVariable long id) {
-        ApiResponse<SuppliersEntity> supplier = supplierService.getSupplierId(id);
+        ApiResponse<SuppliersEntity> supplier = supplierService.getSupplierById(id);
         if (supplier == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

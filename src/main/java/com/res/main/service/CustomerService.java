@@ -1,9 +1,14 @@
 package com.res.main.service;
 
+import com.res.main.dto.LoginRequest;
+import com.res.main.dto.LoginResponse;
 import com.res.main.model.ApiResponse;
 import com.res.main.model.CustomersEntity;
 import com.res.main.repository.CustomerRepository;
+import com.res.main.util.JwtUtil;
+import com.res.main.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,54 +23,68 @@ public class CustomerService {
     public ApiResponse<List<CustomersEntity>> getAllCustomers() {
         List<CustomersEntity> customers = customerRepository.findAll();
         if (customers.isEmpty()) {
-            return new ApiResponse<>("success", customers, "No customers found");
+            return new ApiResponse<>(false, "No customers found", customers);
         }
-        return new ApiResponse<>("success", customers, "Customers retrieved successfully");
+        return new ApiResponse<>(true, "Customers retrieved successfully", customers);
     }
 
     public ApiResponse<CustomersEntity> findById(Long id) {
         Optional<CustomersEntity> customer = customerRepository.findById(id);
         if (customer.isPresent()) {
-            return new ApiResponse<>("success", customer.get(), "Customer retrieved successfully");
+            return new ApiResponse<>(true, "Customer retrieved successfully", customer.get());
         } else {
-            return new ApiResponse<>("error", null, "Customer not found");
+            return new ApiResponse<>(false, "Customer not found", null);
         }
     }
 
     public ApiResponse<CustomersEntity> createCustomer(CustomersEntity customer) {
         Optional<CustomersEntity> customerExists = customerRepository.findByEmail(customer.getEmail());
         if (customerExists.isPresent()) {
-            return new ApiResponse<>("error", null, "Email already in use");
+            return new ApiResponse<>(false, "Email already in use", null);
         }
+        customer.setPassword(PasswordUtil.hashPassword(customer.getPassword()));
         CustomersEntity savedCustomer = customerRepository.save(customer);
-        return new ApiResponse<>("success", savedCustomer, "Customer created successfully");
+        return new ApiResponse<>(true, "Customer created successfully", savedCustomer);
     }
 
     public ApiResponse<CustomersEntity> updateCustomer(long customerId, CustomersEntity updatedCustomer) {
         if (customerRepository.existsById(customerId)) {
             updatedCustomer.setId(customerId);
             CustomersEntity savedCustomer = customerRepository.save(updatedCustomer);
-            return new ApiResponse<>("success", savedCustomer, "Customer updated successfully");
+            return new ApiResponse<>(true, "Customer updated successfully", savedCustomer);
         } else {
-            return new ApiResponse<>("error", null, "Customer not found");
+            return new ApiResponse<>(false, "Customer not found", null);
         }
     }
 
     public ApiResponse<String> deleteCustomer(long customerId) {
         if (customerRepository.existsById(customerId)) {
             customerRepository.deleteById(customerId);
-            return new ApiResponse<>("success", "Customer deleted", "Customer deleted successfully");
+            return new ApiResponse<>(true, "Customer deleted successfully", "Customer deleted");
         } else {
-            return new ApiResponse<>("error", null, "Customer not found");
+            return new ApiResponse<>(false, "Customer not found", null);
         }
     }
 
     public ApiResponse<CustomersEntity> findByEmail(String email) {
         Optional<CustomersEntity> customer = customerRepository.findByEmail(email);
         if (customer.isPresent()) {
-            return new ApiResponse<>("success", customer.get(), "Customer found");
+            return new ApiResponse<>(true, "Customer found", customer.get());
         } else {
-            return new ApiResponse<>("error", null, "Customer not found");
+            return new ApiResponse<>(false, "Customer not found", null);
         }
     }
+
+    // LOGIN
+    public ApiResponse<LoginResponse> login(LoginRequest request) {
+        Optional<CustomersEntity> customer = customerRepository.findByEmail(request.getEmail());
+        if (customer.isPresent()) {
+            if (PasswordUtil.checkPassword(request.getPassword(), customer.get().getPassword())) {
+                String token = JwtUtil.generateToken(customer.get().getEmail());
+                return new ApiResponse<>(true, "Login successful", new LoginResponse(token));
+            }
+        }
+        return new ApiResponse<>(false, "Invalid email or password", new LoginResponse(null));
+    }
+
 }

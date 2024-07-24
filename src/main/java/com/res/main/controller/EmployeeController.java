@@ -20,14 +20,14 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<?> getAllEmployee() {
-        ApiResponse<List<EmployeesEntity>> employees = employeeService.getAllEmployee();
+        ApiResponse<List<EmployeesEntity>> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> createEmployee(@Valid @RequestBody EmployeesEntity newEmployee) {
         ApiResponse<EmployeesEntity> employee = employeeService.createEmployee(newEmployee);
-        if (employee.getStatus().equals("error")) {
+        if (!employee.isSuccess()) {
             return ResponseEntity.status(400).body(employee);
         }
         return ResponseEntity.status(201).body(employee);
@@ -42,7 +42,7 @@ public class EmployeeController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable long id, @Valid
     @RequestBody EmployeesEntity updateEmployee) {
-        ApiResponse<EmployeesEntity> employee = employeeService.updateEmployee(updateEmployee, id);
+        ApiResponse<EmployeesEntity> employee = employeeService.updateEmployee(id, updateEmployee);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 

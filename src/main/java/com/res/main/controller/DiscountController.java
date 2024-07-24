@@ -32,7 +32,7 @@ public class DiscountController {
     @PostMapping
     public ResponseEntity<?> createDiscount(@Valid @RequestBody DiscountsEntity newDiscount) {
         ApiResponse<DiscountsEntity> response = discountService.createDiscount(newDiscount);
-        if (response.getStatus().equals("error")) {
+        if (!response.isSuccess()) {
             return ResponseEntity.status(400).body(response); // Status 400 Bad Request
         }
         return ResponseEntity.status(201).body(response); // Status 201 Created

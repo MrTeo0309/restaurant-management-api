@@ -1,10 +1,13 @@
 package com.res.main.controller;
 
+import com.res.main.dto.LoginRequest;
+import com.res.main.dto.LoginResponse;
 import com.res.main.model.ApiResponse;
 import com.res.main.model.CustomersEntity;
 import com.res.main.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +35,7 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomersEntity newCustomer) {
         ApiResponse<CustomersEntity> response = customerService.createCustomer(newCustomer);
-        if ("error".equals(response.getStatus())) {
+        if (response.isSuccess()) {
             return ResponseEntity.status(400).body(response);
         }
         return ResponseEntity.status(201).body(response); // Status 201 Created
@@ -41,7 +44,7 @@ public class CustomerController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@Valid @PathVariable Long id, @RequestBody CustomersEntity updatedCustomer) {
         ApiResponse<CustomersEntity> response = customerService.updateCustomer(id, updatedCustomer);
-        if ("error".equals(response.getStatus())) {
+        if (!response.isSuccess()) {
             return ResponseEntity.status(404).body(response);
         }
         return ResponseEntity.ok(response);
@@ -50,9 +53,16 @@ public class CustomerController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
         ApiResponse<String> response = customerService.deleteCustomer(id);
-        if ("error".equals(response.getStatus())) {
+        if (!response.isSuccess()) {
             return ResponseEntity.status(404).body(response);
         }
+        return ResponseEntity.ok(response);
+    }
+
+    //    LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        ApiResponse<LoginResponse> response = customerService.login(request);
         return ResponseEntity.ok(response);
     }
 }

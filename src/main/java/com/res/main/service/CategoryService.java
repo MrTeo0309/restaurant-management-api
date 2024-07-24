@@ -12,46 +12,46 @@ import java.util.Optional;
 @Service
 public class CategoryService {
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     public ApiResponse<List<CategoriesEntity>> getAllCategories() {
         List<CategoriesEntity> categories = categoryRepository.findAll();
         if (categories.isEmpty()) {
-            return new ApiResponse<>("success", categories, "No categories found");
+            return new ApiResponse<>(false, "No categories found", categories);
         }
-        return new ApiResponse<>("success", categories, "Categories retrieved successfully");
+        return new ApiResponse<>(true, "Categories retrieved successfully", categories);
     }
 
     public ApiResponse<CategoriesEntity> getCategoryById(long id) {
         Optional<CategoriesEntity> category = categoryRepository.findById(id);
         if (category.isPresent()) {
-            return new ApiResponse<>("success", category.get(), "Category retrieved successfully");
+            return new ApiResponse<>(true, "Category retrieved successfully", category.get());
         } else {
-            return new ApiResponse<>("error", null, "Category not found");
+            return new ApiResponse<>(false, "Category not found", null);
         }
     }
 
     public ApiResponse<CategoriesEntity> createCategory(CategoriesEntity newCategory) {
         CategoriesEntity savedCategory = categoryRepository.save(newCategory);
-        return new ApiResponse<>("success", savedCategory, "Category created successfully");
+        return new ApiResponse<>(true, "Category created successfully", savedCategory);
     }
 
     public ApiResponse<CategoriesEntity> updateCategory(long id, CategoriesEntity updatedCategory) {
         if (categoryRepository.existsById(id)) {
             updatedCategory.setId(id);
             CategoriesEntity savedCategory = categoryRepository.save(updatedCategory);
-            return new ApiResponse<>("success", savedCategory, "Category updated successfully");
+            return new ApiResponse<>(true, "Category updated successfully", savedCategory);
         } else {
-            return new ApiResponse<>("error", null, "Category not found");
+            return new ApiResponse<>(false, "Category not found", null);
         }
     }
 
     public ApiResponse<String> deleteCategory(long id) {
         if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
-            return new ApiResponse<>("success", "Category deleted", "Category deleted successfully");
+            return new ApiResponse<>(true, "Category deleted successfully", "Category deleted");
         } else {
-            return new ApiResponse<>("error", null, "Category not found");
+            return new ApiResponse<>(false, "Category not found", null);
         }
     }
 }
