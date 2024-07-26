@@ -26,24 +26,36 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getCategoryById(@PathVariable long id) {
         ApiResponse<CategoriesEntity> response = categoryService.getCategoryById(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoriesEntity newCategory) {
         ApiResponse<CategoriesEntity> response = categoryService.createCategory(newCategory);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.status(201).body(response); // Status 201 Created
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCategory(@Valid @PathVariable long id, @RequestBody CategoriesEntity updatedCategory) {
         ApiResponse<CategoriesEntity> response = categoryService.updateCategory(id, updatedCategory);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable long id) {
         ApiResponse<String> response = categoryService.deleteCategory(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 }

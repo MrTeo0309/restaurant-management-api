@@ -20,35 +20,47 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<?> getAllEmployee() {
-        ApiResponse<List<EmployeesEntity>> employees = employeeService.getAllEmployees();
-        return new ResponseEntity<>(employees, HttpStatus.OK);
+        ApiResponse<List<EmployeesEntity>> response = employeeService.getAllEmployees();
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> createEmployee(@Valid @RequestBody EmployeesEntity newEmployee) {
-        ApiResponse<EmployeesEntity> employee = employeeService.createEmployee(newEmployee);
-        if (!employee.isSuccess()) {
-            return ResponseEntity.status(400).body(employee);
+        ApiResponse<EmployeesEntity> response = employeeService.createEmployee(newEmployee);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(400).body(response);
         }
-        return ResponseEntity.status(201).body(employee);
+        return ResponseEntity.status(201).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable long id) {
         ApiResponse<String> response = employeeService.deleteEmployee(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable long id, @Valid
     @RequestBody EmployeesEntity updateEmployee) {
-        ApiResponse<EmployeesEntity> employee = employeeService.updateEmployee(id, updateEmployee);
-        return new ResponseEntity<>(employee, HttpStatus.OK);
+        ApiResponse<EmployeesEntity> response = employeeService.updateEmployee(id, updateEmployee);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findEmployee(@PathVariable long id) {
-        ApiResponse<EmployeesEntity> employee = employeeService.findById(id);
-        return new ResponseEntity<>(employee, HttpStatus.OK);
+        ApiResponse<EmployeesEntity> response = employeeService.findById(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

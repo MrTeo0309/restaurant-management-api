@@ -12,7 +12,7 @@ public class CartEntity {
     @Id
     @Column(name = "id")
     private long id;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "customer_id")
     private CustomersEntity customer;
 }

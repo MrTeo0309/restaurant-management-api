@@ -4,6 +4,7 @@ import com.res.main.dto.LoginRequest;
 import com.res.main.dto.LoginResponse;
 import com.res.main.model.ApiResponse;
 import com.res.main.model.CustomersEntity;
+import com.res.main.model.EmployeesEntity;
 import com.res.main.repository.CustomerRepository;
 import com.res.main.util.JwtUtil;
 import com.res.main.util.PasswordUtil;
@@ -74,17 +75,4 @@ public class CustomerService {
             return new ApiResponse<>(false, "Customer not found", null);
         }
     }
-
-    // LOGIN
-    public ApiResponse<LoginResponse> login(LoginRequest request) {
-        Optional<CustomersEntity> customer = customerRepository.findByEmail(request.getEmail());
-        if (customer.isPresent()) {
-            if (PasswordUtil.checkPassword(request.getPassword(), customer.get().getPassword())) {
-                String token = JwtUtil.generateToken(customer.get().getEmail());
-                return new ApiResponse<>(true, "Login successful", new LoginResponse(token));
-            }
-        }
-        return new ApiResponse<>(false, "Invalid email or password", new LoginResponse(null));
-    }
-
 }

@@ -21,38 +21,47 @@ public class SupplierController {
 
     @GetMapping
     public ResponseEntity<?> getAllSuppliers() {
-        ApiResponse<List<SuppliersEntity>> suppliers = supplierService.getAllSuppliers();
-        return new ResponseEntity<>(suppliers, HttpStatus.OK);
+        ApiResponse<List<SuppliersEntity>> response = supplierService.getAllSuppliers();
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> createSupplier(@Valid @RequestBody SuppliersEntity newSupplier) {
-        ApiResponse<SuppliersEntity> supplier = supplierService.createSupplier(newSupplier);
-        if (!supplier.isSuccess()) {
-            return ResponseEntity.status(400).body(supplier);
+        ApiResponse<SuppliersEntity> response = supplierService.createSupplier(newSupplier);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(400).body(response);
         }
-        return ResponseEntity.status(201).body(supplier);
+        return ResponseEntity.status(201).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getSupplier(@PathVariable long id) {
-        ApiResponse<SuppliersEntity> supplier = supplierService.getSupplierById(id);
-        if (supplier == null) {
+        ApiResponse<SuppliersEntity> response = supplierService.getSupplierById(id);
+        if (response == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(supplier, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSupplier(@PathVariable long id, @Valid
     @RequestBody SuppliersEntity updatedSupplier) {
-        ApiResponse<SuppliersEntity> supplier = supplierService.updateSupplier(id, updatedSupplier);
-        return ResponseEntity.ok(supplier);
+        ApiResponse<SuppliersEntity> response = supplierService.updateSupplier(id, updatedSupplier);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(400).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSupplier(@PathVariable long id) {
-        ApiResponse<String> supplier = supplierService.deleteSupplier(id);
-        return ResponseEntity.ok(supplier);
+        ApiResponse<String> response = supplierService.deleteSupplier(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(400).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 }

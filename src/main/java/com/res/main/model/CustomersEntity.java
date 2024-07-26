@@ -29,6 +29,6 @@ public class CustomersEntity {
     @Column(name = "activated")
     private Boolean activated;
 
-    @OneToMany(mappedBy = "customer")
-    private List<CartEntity> carts;
+    @OneToOne(mappedBy = "customer")
+    private CartEntity cart;
 }

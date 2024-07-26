@@ -20,12 +20,18 @@ public class DishController {
     @GetMapping
     public ResponseEntity<?> getAllDishes() {
         ApiResponse<List<DishesEntity>> response = dishService.getAllDishes();
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getDishById(@PathVariable long id) {
         ApiResponse<DishesEntity> response = dishService.getDishById(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
@@ -41,12 +47,18 @@ public class DishController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDish(@PathVariable long id, @Valid @RequestBody DishesEntity updatedDish) {
         ApiResponse<DishesEntity> response = dishService.updateDish(id, updatedDish);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDish(@PathVariable long id) {
         ApiResponse<String> response = dishService.deleteDish(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 }

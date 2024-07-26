@@ -29,5 +29,9 @@ public class EmployeesEntity {
     @NotBlank(message = "Email cannot be empty")
     @Column(name = "email")
     private String email;
+
+    @NotBlank(message = "Password cannot be empty")
+    @Column(name = "password")
+    private String password;
 }
 

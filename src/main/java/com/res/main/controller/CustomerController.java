@@ -5,6 +5,7 @@ import com.res.main.dto.LoginResponse;
 import com.res.main.model.ApiResponse;
 import com.res.main.model.CustomersEntity;
 import com.res.main.service.CustomerService;
+import com.res.main.service.LoginService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,16 +20,24 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private LoginService loginService;
 
     @GetMapping
     public ResponseEntity<?> getAllCustomers() {
         ApiResponse<List<CustomersEntity>> response = customerService.getAllCustomers();
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCustomerById(@PathVariable Long id) {
         ApiResponse<CustomersEntity> response = customerService.findById(id);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
@@ -62,7 +71,10 @@ public class CustomerController {
     //    LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        ApiResponse<LoginResponse> response = customerService.login(request);
+        ApiResponse<LoginResponse> response = loginService.loginCustomer(request);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 }
