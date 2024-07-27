@@ -11,36 +11,16 @@ public class OrderItemsEntity {
     @Id
     @Column(name = "id")
     private long id;
-    @Basic
-    @Column(name = "order_id")
-    private Long orderId;
-    @Basic
-    @Column(name = "dish_id")
-    private Long dishId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private OrdersEntity order;
+
+    @OneToOne
+    @JoinColumn(name = "dish_id")
+    private DishesEntity dish;
+
     @Basic
     @Column(name = "quantity")
     private Integer quantity;
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    private TablesEntity table;
-
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private CustomersEntity customer;
-
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private EmployeesEntity employee;
-
-    @ManyToOne
-    @JoinColumn(name = "discount_id")
-    private DiscountsEntity discount;
-
-    @ManyToOne
-    @JoinColumn(name = "rate_id")
-    private RateEntity rate;
-
-    @ManyToOne
-    @JoinColumn(name = "invoice_id")
-    private InvoiceEntity invoice;
 }

@@ -21,6 +21,7 @@ public class OrdersEntity {
     @Basic
     @Column(name = "note")
     private String note;
+
     @ManyToOne
     @JoinColumn(name = "table_id")
     private TablesEntity table;
