@@ -20,9 +20,6 @@ public class DishController {
     @GetMapping
     public ResponseEntity<?> getAllDishes() {
         ApiResponse<List<DishesEntity>> response = dishService.getAllDishes();
-        if (!response.isSuccess()) {
-            return ResponseEntity.status(404).body(response);
-        }
         return ResponseEntity.ok(response);
     }
 

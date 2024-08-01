@@ -33,6 +33,17 @@ public class LoginService {
         return new ApiResponse<>(false, "Invalid email or password", new LoginResponse(null));
     }
 
+    public ApiResponse<CustomersEntity> loginCustomerNoToken(LoginRequest request) {
+        Optional<CustomersEntity> customer = customerRepository.findByEmail(request.getEmail());
+        if (customer.isPresent()) {
+            if (PasswordUtil.checkPassword(request.getPassword(), customer.get().getPassword())) {
+//                String token = JwtUtil.generateToken(customer.get().getId(), Optional.empty());
+                return new ApiResponse<>(true, "Login success", customer.get());
+            }
+        }
+        return new ApiResponse<>(false, "Invalid email or password", null);
+    }
+
     public ApiResponse<LoginResponse> loginEmployee(LoginRequest request) {
         Optional<EmployeesEntity> employee = employeeRepository.findByEmail(request.getEmail());
         if (employee.isPresent()) {

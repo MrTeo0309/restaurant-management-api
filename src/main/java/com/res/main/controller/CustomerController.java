@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/customers")
+@CrossOrigin(origins = "*")
 public class CustomerController {
 
     @Autowired
@@ -26,9 +27,6 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<?> getAllCustomers() {
         ApiResponse<List<CustomersEntity>> response = customerService.getAllCustomers();
-        if (!response.isSuccess()) {
-            return ResponseEntity.status(404).body(response);
-        }
         return ResponseEntity.ok(response);
     }
 
@@ -72,6 +70,15 @@ public class CustomerController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         ApiResponse<LoginResponse> response = loginService.loginCustomer(request);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(404).body(response);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login-no-token")
+    public ResponseEntity<?> loginNoToken(@RequestBody LoginRequest request) {
+        ApiResponse<CustomersEntity> response = loginService.loginCustomerNoToken(request);
         if (!response.isSuccess()) {
             return ResponseEntity.status(404).body(response);
         }

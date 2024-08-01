@@ -20,9 +20,6 @@ public class DiscountController {
     @GetMapping
     public ResponseEntity<?> getAllDiscounts() {
         ApiResponse<List<DiscountsEntity>> response = discountService.getAllDiscounts();
-        if (!response.isSuccess()) {
-            return ResponseEntity.status(404).body(response);
-        }
         return ResponseEntity.ok(response);
     }
 

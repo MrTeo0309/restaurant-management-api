@@ -51,6 +51,7 @@ public class CustomerService {
     public ApiResponse<CustomersEntity> updateCustomer(long customerId, CustomersEntity updatedCustomer) {
         if (customerRepository.existsById(customerId)) {
             updatedCustomer.setId(customerId);
+            updatedCustomer.setPassword(PasswordUtil.hashPassword(updatedCustomer.getPassword()));
             CustomersEntity savedCustomer = customerRepository.save(updatedCustomer);
             return new ApiResponse<>(true, "Customer updated successfully", savedCustomer);
         } else {

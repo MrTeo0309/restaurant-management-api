@@ -21,9 +21,6 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<?> getAllEmployee() {
         ApiResponse<List<EmployeesEntity>> response = employeeService.getAllEmployees();
-        if (!response.isSuccess()) {
-            return ResponseEntity.status(404).body(response);
-        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

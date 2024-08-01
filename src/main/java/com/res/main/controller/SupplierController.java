@@ -22,9 +22,6 @@ public class SupplierController {
     @GetMapping
     public ResponseEntity<?> getAllSuppliers() {
         ApiResponse<List<SuppliersEntity>> response = supplierService.getAllSuppliers();
-        if (!response.isSuccess()) {
-            return ResponseEntity.status(404).body(response);
-        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
