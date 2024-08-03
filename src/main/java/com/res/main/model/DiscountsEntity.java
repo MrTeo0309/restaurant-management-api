@@ -37,5 +37,9 @@ public class DiscountsEntity {
 
     @DecimalMin(value = "0.0", message = "Quota must be greater than zero")
     @Column(name = "quota")
-    private Double minPurchaseAmount;
+    private Double quota;
+
+    @DecimalMin(value = "0.0", message = "Percent number be greater than zero")
+    @Column(name = "percent_number")
+    private Double percentNumber;
 }
