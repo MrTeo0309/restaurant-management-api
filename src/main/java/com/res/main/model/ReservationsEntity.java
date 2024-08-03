@@ -13,8 +13,11 @@ public class ReservationsEntity {
     @Column(name = "id")
     private long id;
     @Basic
-    @Column(name = "date")
-    private Timestamp date;
+    @Column(name = "time_start")
+    private Timestamp timeStart;
+    @Basic
+    @Column(name = "time_end")
+    private Timestamp timeEnd;
     @ManyToOne
     @JoinColumn(name = "table_id")
     private TablesEntity table;

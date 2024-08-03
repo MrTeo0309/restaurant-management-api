@@ -34,8 +34,5 @@ public class DishesEntity {
     private CategoriesEntity category;
 
     @OneToOne(mappedBy = "dish")
-    private MenuItemsEntity menuItem;
-
-    @OneToOne(mappedBy = "dish")
     private OrderItemsEntity orderItem;
 }

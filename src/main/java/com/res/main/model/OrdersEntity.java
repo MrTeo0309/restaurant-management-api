@@ -39,10 +39,6 @@ public class OrdersEntity {
     private DiscountsEntity discount;
 
     @ManyToOne
-    @JoinColumn(name = "rate_id")
-    private RateEntity rate;
-
-    @ManyToOne
     @JoinColumn(name = "invoice_id")
     private InvoiceEntity invoice;
 }
